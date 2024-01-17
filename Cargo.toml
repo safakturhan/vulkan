@@ -1,0 +1,7 @@
+[package]
+name = "vulkan"
+version = "0.1.0"
+authors = ["Şafak Turhan Eğriçayır"]
+edition = "2021"
+
+[dependencies]
