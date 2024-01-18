@@ -5,3 +5,6 @@ authors = ["Şafak Turhan Eğriçayır"]
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.79"
+ash = "0.37.3"
+raw-window-handle = "0.6.0"
