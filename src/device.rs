@@ -19,6 +19,7 @@ pub struct Device {
     pub instance: Arc<Instance>,
     pub physical_device: PhysicalDevice,
     pub queue: Queue,
+    pub dynamic_rendering: khr::DynamicRendering,
 }
 
 impl Device {
@@ -52,12 +53,18 @@ impl Device {
         let queue_create_info = vk::DeviceQueueCreateInfo::builder()
             .queue_family_index(queue_family.index)
             .queue_priorities(&[1.0]);
-        let enabled_extension_names = [khr::Swapchain::name().as_ptr()];
+        let enabled_extension_names = [
+            khr::Swapchain::name().as_ptr(),
+            khr::DynamicRendering::name().as_ptr(),
+        ];
         let handle = {
+            let mut dynamic_rendering_features =
+                vk::PhysicalDeviceDynamicRenderingFeatures::builder().dynamic_rendering(true);
             unsafe {
                 instance.handle.create_device(
                     physical_device.handle,
                     &vk::DeviceCreateInfo::builder()
+                        .push_next(&mut dynamic_rendering_features)
                         .queue_create_infos(std::slice::from_ref(&queue_create_info))
                         .enabled_extension_names(&enabled_extension_names),
                     None,
@@ -68,11 +75,13 @@ impl Device {
             handle: unsafe { handle.get_device_queue(queue_family.index, 0) },
             queue_family,
         };
+        let dynamic_rendering = khr::DynamicRendering::new(&instance.handle, &handle);
         Ok(Self {
             handle,
             instance,
             physical_device,
             queue,
+            dynamic_rendering,
         })
     }
 }
