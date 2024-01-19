@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use ash::{extensions::khr, vk};
-
 use crate::{
     instance::Instance,
     physical_device::{PhysicalDevice, QueueFamily},
     surface::Surface,
 };
+
+use ash::{extensions::khr, vk};
 
 #[derive(Debug)]
 pub struct Queue {
@@ -49,7 +49,7 @@ impl Device {
                     .contains(vk::QueueFlags::GRAPHICS)
                     && surface_support
             })
-            .unwrap();
+            .expect("Failed to find queue family with graphics and surface support");
         let queue_create_info = vk::DeviceQueueCreateInfo::builder()
             .queue_family_index(queue_family.index)
             .queue_priorities(&[1.0]);

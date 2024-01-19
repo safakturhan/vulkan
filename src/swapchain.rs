@@ -8,6 +8,7 @@ use crate::{device::Device, surface::Surface};
 pub struct Swapchain {
     pub handle: vk::SwapchainKHR,
     pub functions: khr::Swapchain,
+    pub surface_format: vk::SurfaceFormatKHR,
     pub images: Vec<vk::Image>,
     pub extent: vk::Extent2D,
 }
@@ -56,7 +57,7 @@ impl Swapchain {
                             .color_space
                             .eq(&vk::ColorSpaceKHR::SRGB_NONLINEAR)
                 })
-                .unwrap()
+                .expect("Failed to find specified surface format")
         };
 
         let extent = surface_capabilities.current_extent;
@@ -87,6 +88,7 @@ impl Swapchain {
         Ok(Self {
             handle,
             functions,
+            surface_format,
             images,
             extent,
         })
